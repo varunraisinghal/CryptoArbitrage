@@ -8,6 +8,11 @@ class Graph:
 
     def add_edge(self, edge):
         self.edges.append(edge)
-
-    def __repr__(self):
         return f"Graph with {len(self.nodes)} nodes and {len(self.edges)} edges"
+    
+    def get_nodes(self):
+        return self.nodes
+    
+
+    def get_edges(self):
+        return self.edges
