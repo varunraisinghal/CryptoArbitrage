@@ -1,9 +1,7 @@
-
-api_key = 'HQEyig9ozNbtx9o4oXlrMoZRVaoFP5NVN3MsyiKSkTflVBNIoFZzbDy4Kxhgz8w9'
-
-
+import os
 import requests
 
+api_key = os.getenv('api_key')
 def get_all_eth_markets(api_key):
     url = "https://api.binance.us/api/v3/exchangeInfo"
     headers = {'X-MBX-APIKEY': api_key}

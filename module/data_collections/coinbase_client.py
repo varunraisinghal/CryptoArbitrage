@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[10]:
-
-
 import requests
 
 def get_coinbase_products():
@@ -16,8 +13,6 @@ def get_coinbase_products():
         return []
 
 
-# In[11]:
-
 
 def get_recent_price(product_id):
     url = f'https://api.pro.coinbase.com/products/{product_id}/ticker'
@@ -26,9 +21,6 @@ def get_recent_price(product_id):
         return response.json()['price']
     else:
         return 'N/A'
-
-
-# In[13]:
 
 
 products = get_coinbase_products()

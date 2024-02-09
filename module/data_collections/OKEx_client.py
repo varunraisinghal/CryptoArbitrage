@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[17]:
-
 
 import requests
 
@@ -15,10 +13,6 @@ def get_recent_price(instrument_id):
     url = f'https://www.okex.com/api/v5/market/ticker?instId={instrument_id}'
     response = requests.get(url)
     return response.json()['data'][0]['last'] if response.status_code == 200 else 'N/A'
-
-
-# In[19]:
-
 
 instruments = get_okex_instruments()['data']
 for instrument in instruments:
