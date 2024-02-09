@@ -1,5 +1,4 @@
 import pandas as pd
-from collections import deque
 
 # Create a DataFrame to represent the graph
 graph = pd.DataFrame(columns=['Source Exchange', 'Target Exchange', 'Source Coin', 'Target Coin', 'Fee'])
@@ -17,24 +16,3 @@ graph['Source Coin Price'] = [50000, 50000, 2000, 150, 3000, 3000]
 graph['Target Coin Price'] = [3000, 50000, 150, 150, 200, 3000]
 
 
-def bfs(graph, start_exchange, start_coin):
-    # Create a queue for BFS
-    queue = deque([(start_exchange, start_coin)])
-
-    # Create a set to store visited nodes
-    visited = set()
-
-    while queue:
-        exchange, coin = queue.popleft()
-        print(f'Exchange: {exchange}, Coin: {coin}, Price: {graph[(graph["Source Exchange"] == exchange) & (graph["Source Coin"] == coin)]["Source Coin Price"].values[0]}')
-
-        # Get all the neighbors of the current node
-        neighbors = graph[(graph['Source Exchange'] == exchange) & (graph['Source Coin'] == coin)][['Target Exchange', 'Target Coin']].values
-
-        for neighbor in neighbors:
-            if neighbor not in visited:
-                queue.append(tuple(neighbor))
-                visited.add(tuple(neighbor))
-
-# Call the bfs function
-bfs(graph, 'Exchange A', 'Bitcoin')

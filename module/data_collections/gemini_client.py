@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[2]:
-
 
 import requests
 
@@ -15,9 +13,6 @@ def get_recent_price(symbol):
     url = f'https://api.gemini.com/v1/pubticker/{symbol}'
     response = requests.get(url)
     return response.json()['last'] if response.status_code == 200 else 'N/A'
-
-
-# In[3]:
 
 
 symbols = get_gemini_symbols()
