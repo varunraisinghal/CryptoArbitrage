@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
-
 
 import requests
 
@@ -13,9 +11,6 @@ def get_all_assets():
         return response.json()['result']
     else:
         return {}
-
-
-# In[ ]:
 
 
 def get_recent_price(pair):
@@ -32,9 +27,6 @@ def get_recent_price(pair):
         return 'N/A'
 
 
-# In[10]:
-
-
 assets = get_all_assets()
 for asset, details in assets.items():
 	# Kraken uses 'X' or 'Z' prefixes for crypto and fiat currencies respectively in their API
@@ -45,10 +37,5 @@ for asset, details in assets.items():
 	pair = f'{asset_code}USD'  # Assuming you want to get the USD pair
 	price = get_recent_price(pair)
 	print(f'{asset} ({pair}): {price}')
-
-
-# In[ ]:
-
-
 
 
