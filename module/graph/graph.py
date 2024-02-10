@@ -21,9 +21,9 @@ class Graph:
 
     def find_arbitrage(self, start_node):
         # Initialize the profit and path for each node
-        profit = {node: 0 for node in self.nodes.values()}
+        profit = {node: 0 for node in self.nodes}
         profit[start_node] = 1
-        path = {node: [] for node in self.nodes.values()}
+        path = {node: [] for node in self.nodes}
 
         # Use a priority queue to store the nodes to visit
         queue = [(-profit[start_node], start_node)]
@@ -37,7 +37,7 @@ class Graph:
                 # If the new profit is higher, update the profit and path
                 if new_profit > profit[adjacent_node]:
                     profit[adjacent_node] = new_profit
-                    path[adjacent_node] = path[current_node] + [current_node.name]
+                    path[adjacent_node] = path[current_node] + [current_node.exchange]
                     heapq.heappush(queue, (-new_profit, adjacent_node))
 
         # Return the profit and path for each node
