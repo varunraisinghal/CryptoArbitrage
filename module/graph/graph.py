@@ -22,7 +22,7 @@ class Graph:
     def find_arbitrage(self, start_node):
         # Initialize the profit and path for each node
         profit = {node: 0 for node in self.nodes.values()}
-        profit[start_node] = 1
+        profit[start_node] = start_node.get_price()
         path = {node: [] for node in self.nodes.values()}
 
         # Use a priority queue to store the nodes to visit
