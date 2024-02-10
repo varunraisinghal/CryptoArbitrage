@@ -1,3 +1,6 @@
+import pandas as pd
+import heapq
+
 class Node:
 	def __init__(self, exchange, cryptocurrency, price, rel_value=0):
 		self.exchange = exchange

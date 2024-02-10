@@ -1,5 +1,5 @@
 import requests
-api_key = 'HQEyig9ozNbtx9o4oXlrMoZRVaoFP5NVN3MsyiKSkTflVBNIoFZzbDy4Kxhgz8w9'
+import pandas as pd
 
 def get_markets(api_key, currencies):
     """Fetches markets for specified currencies, excluding pairs containing 'USD4'."""
@@ -15,10 +15,6 @@ def get_markets(api_key, currencies):
     except requests.RequestException as e:
         return f"Error: {e}"
 
-# Usage of the updated function
-eth_markets = get_markets(api_key, ['ETH'])
-usdt_usdc_markets = get_markets(api_key, ['USDT', 'USDC'])
-
 def get_price(api_key, symbol):
     url = f"https://api.binance.us/api/v3/ticker/price?symbol={symbol}"
     headers = {'X-MBX-APIKEY': api_key}
@@ -26,13 +22,10 @@ def get_price(api_key, symbol):
     if response.status_code == 200:
         data = response.json()
         return data['price']
-        
     else:
         return "Error: " + response.text
 
-def format_and_print_price(symbol, price):
-    # Improved method to identify base and quote currencies
-    # Assume last 3 or 4 characters as quote currency based on known currencies
+def format_price_data(symbol, price):
     known_currencies = ['USDT', 'USDC', 'BTC', 'ETH', 'BUSD', 'DAI', 'ADA', 'MATIC', 'SOL']
     quote_currency = None
     for currency in known_currencies:
@@ -43,42 +36,57 @@ def format_and_print_price(symbol, price):
     if quote_currency:
         base_currency = symbol[:-len(quote_currency)]
     else:
-        # Fallback to a default assumption if quote currency is not in the known list
         base_currency = symbol[:-3]
         quote_currency = symbol[-3:]
 
-    # Ensure that both base and quote currencies are identified
     if base_currency and quote_currency:
-        print(f"Price of {base_currency} in {quote_currency}: {price} {quote_currency} for 1 {base_currency}. Conversion rate: 1 {base_currency} = {price} {quote_currency}")
+        return {
+            "Exchange": "Binance",
+            "Crypto": base_currency,
+            "Quote": quote_currency.lower(),
+            "Price": float(price),
+            "Conversion_Rate": f"1 {base_currency} = {price} {quote_currency}"
+        }
     else:
-        print(f"Unable to determine base and quote currencies for symbol: {symbol}")
+        return None
 
+api_key = 'HQEyig9ozNbtx9o4oXlrMoZRVaoFP5NVN3MsyiKSkTflVBNIoFZzbDy4Kxhgz8w9'
 
+# Fetching market data
+eth_markets = get_markets(api_key, ['ETH'])
+usdt_usdc_markets = get_markets(api_key, ['USDT', 'USDC'])
 
-# Count the total number of markets
-total_markets = len(eth_markets) + len(usdt_usdc_markets)
-print(f"Total markets to fetch: {total_markets}")
-
-# Counter for successfully fetched prices
-fetched_prices_count = 0
-
-# Fetching prices and printing information
-for symbol in eth_markets + usdt_usdc_markets:
-    price = get_price(api_key, symbol)
-    if "Error" not in price:
-        format_and_print_price(symbol, price)
-        fetched_prices_count += 1
-    else:
-        print(f"Failed to fetch price for {symbol}")
-
-# Check if all prices were successfully fetched
-if fetched_prices_count == total_markets:
-    print("Successfully fetched prices for all markets.")
+if isinstance(eth_markets, str) or isinstance(usdt_usdc_markets, str):
+    print("Failed to fetch market data.")
 else:
-    print(f"Prices fetched for {fetched_prices_count} markets out of {total_markets}.")
+    combined_markets = eth_markets + usdt_usdc_markets
+    price_data = []
 
-# Optionally, you can also print how many markets failed
-failed_markets = total_markets - fetched_prices_count
-if failed_markets > 0:
-    print(f"Failed to fetch prices for {failed_markets} markets.")
+    for symbol in combined_markets:
+        price = get_price(api_key, symbol)
+        if "Error" not in price:
+            data = format_price_data(symbol, price)
+            if data:
+                price_data.append(data)
 
+    # Creating DataFrame
+    df = pd.DataFrame(price_data)
+
+    # Sorting DataFrame by Crypto
+    df = df.sort_values(by='Crypto')
+
+    # Checking if all pairs are in the DataFrame
+    if len(df) == len(combined_markets):
+        print("All market pairs are included in the DataFrame.")
+    else:
+        print("Some market pairs may be missing in the DataFrame.")
+        missing_pairs = set(combined_markets) - set(df['Crypto'])
+        print("Missing pairs:", missing_pairs)
+
+    # Printing DataFrame
+    print(df.to_string(index=False))
+
+    # Saving DataFrame to CSV
+    csv_filename = "market_prices.csv"
+    df.to_csv(csv_filename, index=False)
+    print(f"DataFrame saved to {csv_filename}")
