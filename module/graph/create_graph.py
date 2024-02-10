@@ -37,4 +37,5 @@ for edge in edge_list:
     
 arbs = []
 for node in crypto_graph.nodes:
-	arbs.append("start: ", node, "arb:, ", crypto_graph.find_arbitrage(node))
+	arbs.append((node, crypto_graph.find_arbitrage(node)))  
+print(arbs)

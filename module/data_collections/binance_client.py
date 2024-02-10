@@ -1,5 +1,6 @@
 import requests
 import pandas as pd
+import os
 
 def get_markets(api_key, currencies):
     """Fetches markets for specified currencies, excluding pairs containing 'USD4'."""
@@ -50,7 +51,7 @@ def format_price_data(symbol, price):
     else:
         return None
 
-api_key = 'HQEyig9ozNbtx9o4oXlrMoZRVaoFP5NVN3MsyiKSkTflVBNIoFZzbDy4Kxhgz8w9'
+api_key = os.getenv('api_key')
 
 # Fetching market data
 eth_markets = get_markets(api_key, ['ETH'])
